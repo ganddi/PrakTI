@@ -1,96 +1,71 @@
 @extends('layouts.app')
 @section('judul', 'Pengajuan KPI')
+@section('subjudul', 'Ajukan KPI sesuai periode dan instansi yang ditetapkan')
 
 @section('content')
-    @if (! $utama)
-        <section class="pk-panel">
-            <div class="pk-empty">
-                <i class="bi bi-send" aria-hidden="true"></i>
-                <h3>Belum ada pengajuan KPI</h3>
-                <p>Siapkan data instansi tempat KPI dan surat permohonan dalam format PDF.</p>
-                <a href="{{ route('mahasiswa.pengajuan.create') }}" class="btn btn-primary">Ajukan KPI</a>
-            </div>
-        </section>
+    @if (! $pengajuan)
+        <section class="pk-panel"><div class="pk-empty"><i class="bi bi-send" aria-hidden="true"></i><h3>Belum ada pengajuan KPI</h3>
+            <p>Pilih periode dan tempat KPI, lalu unggah dokumen persyaratan dalam format PDF.</p><a href="{{ route('mahasiswa.pengajuan.create') }}" class="btn btn-primary">Ajukan KPI</a></div></section>
     @else
+        @php $surat = $pengajuan->dokumenTerakhir('surat_balasan'); @endphp
         <section class="pk-panel mb-4">
             <div class="pk-panel-head">
-                <div>
-                    <h2 class="pk-panel-title fs-5">{{ $utama->nama_instansi }}</h2>
-                    <span class="text-secondary">Diajukan {{ $utama->created_at->translatedFormat('d F Y') }}</span>
-                </div>
-                <x-status :value="$utama->status" />
+                <div><h2 class="pk-panel-title fs-5">{{ $pengajuan->nama_instansi }}</h2><span class="text-secondary">Diajukan {{ $pengajuan->tanggal_pengajuan->translatedFormat('d F Y') }}</span></div>
+                <x-status :value="$pengajuan->status" />
             </div>
-
-            @if ($utama->status === 'diajukan')
-                <div class="alert alert-info">Pengajuan sedang diperiksa admin program studi. Anda akan menerima email setelah diverifikasi.</div>
-            @elseif ($utama->status === 'ditolak')
-                <div class="alert alert-danger">
-                    <div class="fw-semibold mb-1">Pengajuan belum disetujui</div>
-                    <p class="mb-2">{{ $utama->catatan_admin }}</p>
-                    <a href="{{ route('mahasiswa.pengajuan.create') }}" class="btn btn-sm btn-danger">Ajukan ulang dengan perbaikan</a>
-                </div>
-            @endif
-
+            @if ($pengajuan->status === 'diajukan')<div class="alert alert-info">Pengajuan sedang diperiksa admin program studi.</div>
+            @elseif ($pengajuan->status === 'revisi')
+                <div class="alert alert-danger"><div class="fw-semibold mb-1">Pengajuan perlu diperbaiki</div><p class="mb-2">{{ $pengajuan->catatan_admin }}</p>
+                    <a href="{{ route('mahasiswa.pengajuan.edit', $pengajuan) }}" class="btn btn-sm btn-danger">Perbaiki dan kirim ulang</a></div>
+            @elseif ($pengajuan->catatan_admin)<div class="alert alert-secondary"><span class="fw-semibold">Catatan admin:</span> {{ $pengajuan->catatan_admin }}</div>@endif
             <dl class="pk-info">
-                <div><dt>Bidang kerja</dt><dd>{{ $utama->bidang_kerja }}</dd></div>
-                <div><dt>Periode</dt><dd>{{ $utama->tanggal_mulai->translatedFormat('d M Y') }} – {{ $utama->tanggal_selesai->translatedFormat('d M Y') }}</dd></div>
-                <div><dt>Dosen pembimbing</dt><dd>{{ $utama->pembimbing->name ?? 'Ditetapkan setelah verifikasi' }}</dd></div>
-                <div><dt>Pembimbing lapangan</dt><dd>{{ $utama->pembimbing_lapangan ?: '–' }}</dd></div>
-                <div><dt>Alamat instansi</dt><dd class="fw-normal">{{ $utama->alamat_instansi }}</dd></div>
-                <div><dt>Kontak instansi</dt><dd>{{ $utama->kontak_instansi ?: '–' }}</dd></div>
+                <div><dt>Periode</dt><dd>{{ $pengajuan->periode->nama_periode }}<span class="d-block fw-normal small text-secondary">{{ $pengajuan->tanggal_mulai->translatedFormat('d M Y') }} – {{ $pengajuan->tanggal_selesai->translatedFormat('d M Y') }}</span></dd></div>
+                <div><dt>Jenis instansi</dt><dd>{{ $pengajuan->bidang_kerja }}</dd></div>
+                <div><dt>Alamat instansi</dt><dd class="fw-normal">{{ $pengajuan->alamat_instansi }}</dd></div>
+                <div><dt>Kontak instansi</dt><dd>{{ $pengajuan->pembimbing_lapangan ?: '–' }}<span class="d-block fw-normal small text-secondary">{{ $pengajuan->kontak_instansi }}</span></dd></div>
+                <div><dt>Keperluan</dt><dd class="fw-normal">{{ $pengajuan->keperluan }}</dd></div>
             </dl>
         </section>
 
-        <section class="mb-4">
-            <div class="pk-panel-head">
-                <h2 class="pk-panel-title">Dokumen</h2>
-            </div>
-            @include('shared.dokumen', ['dokumen' => $utama->dokumen])
-
-            @if ($utama->status !== 'ditolak')
-                <div class="pk-panel mt-3">
-                    <h3 class="pk-panel-title mb-1">Unggah dokumen</h3>
-                    <p class="text-secondary small">Contoh: surat balasan dari instansi atau laporan akhir KPI. Format PDF, Word, JPG, atau PNG, maksimal 5 MB.</p>
-                    <form method="POST" action="{{ route('mahasiswa.pengajuan.dokumen', $utama) }}" enctype="multipart/form-data" class="row g-2 align-items-end">
-                        @csrf
-                        <div class="col-md-4">
-                            <label for="jenis" class="form-label">Jenis dokumen</label>
-                            <select id="jenis" name="jenis" class="form-select @error('jenis') is-invalid @enderror" required>
-                                @foreach (\App\Models\Dokumen::JENIS as $kunci => $label)
-                                    <option value="{{ $kunci }}" @selected(old('jenis', 'surat_balasan') === $kunci)>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-5">
-                            <label for="berkas" class="form-label">Berkas</label>
-                            <input id="berkas" name="berkas" type="file" class="form-control @error('berkas') is-invalid @enderror"
-                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
-                        </div>
-                        <div class="col-md-3"><button class="btn btn-primary w-100" type="submit">Unggah dokumen</button></div>
-                    </form>
-                </div>
-            @endif
-        </section>
-
-        @if ($riwayat->isNotEmpty())
-            <section class="pk-panel">
-                <h2 class="pk-panel-title mb-3">Riwayat pengajuan sebelumnya</h2>
-                <div class="table-responsive">
-                    <table class="table pk-table">
-                        <thead><tr><th>Instansi</th><th>Diajukan</th><th>Status</th><th>Catatan admin</th></tr></thead>
-                        <tbody>
-                        @foreach ($riwayat as $r)
-                            <tr>
-                                <td class="fw-semibold">{{ $r->nama_instansi }}</td>
-                                <td class="text-nowrap">{{ $r->created_at->translatedFormat('d M Y') }}</td>
-                                <td><x-status :value="$r->status" /></td>
-                                <td>{{ $r->catatan_admin ?: '–' }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+        @if (in_array($pengajuan->status, ['disetujui', 'berjalan', 'selesai']))
+            <section class="pk-panel mb-4" id="surat">
+                <h2 class="pk-panel-title mb-1">Surat KPI</h2>
+                <p class="small text-secondary mb-3">Unduh template surat permohonan, lengkapi dan kirimkan ke instansi, lalu unggah surat balasan yang Anda terima.</p>
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <h3 class="pk-subtitle">1. Template surat permohonan</h3>
+                        @forelse ($templateSurat as $t)<x-berkas :href="route('template.unduh', $t->kode)" :nama="$t->nama" :ukuran="$t->ukuran" class="mb-2" />
+                        @empty<p class="text-secondary small">Admin belum mengunggah template surat permohonan.</p>@endforelse
+                    </div>
+                    <div class="col-lg-6">
+                        <h3 class="pk-subtitle">2. Surat balasan dari instansi</h3>
+                        @if ($surat)
+                            <x-berkas :href="route('dokumen.unduh', $surat)" :nama="$surat->nama_file" :ukuran="$surat->ukuran_format" :lihat="true" class="mb-2" />
+                            <p class="mb-2"><x-status :value="$surat->status_verifikasi" /> <span class="small text-secondary ms-1">diunggah {{ $surat->uploaded_at->translatedFormat('d M Y H:i') }}</span></p>
+                            @if ($surat->catatan)<div class="alert {{ $surat->status_verifikasi === 'revisi' ? 'alert-danger' : 'alert-secondary' }} py-2">{{ $surat->catatan }}</div>@endif
+                        @endif
+                        @if ($pengajuan->status === 'disetujui' && (! $surat || $surat->status_verifikasi === 'revisi'))
+                            <form method="POST" action="{{ route('mahasiswa.pengajuan.surat-balasan', $pengajuan) }}" enctype="multipart/form-data">@csrf
+                                <x-input name="surat_balasan" :label="$surat ? 'Unggah ulang surat balasan' : 'Berkas surat balasan'" type="file" accept=".pdf,.jpg,.jpeg,.png" :required="true" hint="PDF, JPG, atau PNG, maksimal 5 MB." />
+                                <button class="btn btn-primary" type="submit"><i class="bi bi-upload me-1" aria-hidden="true"></i>Unggah surat balasan</button></form>
+                        @elseif ($surat?->status_verifikasi === 'diverifikasi' && ! $pengajuan->kelompok)
+                            <p class="small text-secondary mb-0">Surat terverifikasi. Tunggu admin menempatkan Anda di kelompok KPI.</p>
+                        @endif
+                    </div>
                 </div>
             </section>
         @endif
+
+        <section class="mb-4">
+            <div class="pk-panel-head"><h2 class="pk-panel-title">Semua dokumen</h2></div>
+            @include('shared.dokumen', ['dokumen' => $pengajuan->dokumen])
+            @if ($pengajuan->status !== 'selesai')
+                <details class="pk-panel mt-3"><summary class="fw-semibold">Unggah dokumen pendukung lainnya</summary>
+                    <form method="POST" action="{{ route('mahasiswa.pengajuan.dokumen', $pengajuan) }}" enctype="multipart/form-data" class="mt-2">@csrf
+                        <x-input name="berkas" label="Berkas" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" :required="true" hint="Maksimal 5 MB." />
+                        <button class="btn btn-outline-primary" type="submit">Unggah</button></form>
+                </details>
+            @endif
+        </section>
     @endif
 @endsection

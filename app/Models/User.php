@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/** SDD Tabel 3.1: akun login seluruh pengguna. Data detail ada di Mahasiswa / DosenPembimbing. */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Notifiable;
 
     public const ADMIN = 'admin';
     public const MAHASISWA = 'mahasiswa';
@@ -22,65 +22,70 @@ class User extends Authenticatable
         self::ADMIN => 'Admin',
     ];
 
-    protected $fillable = [
-        'name', 'email', 'password', 'role', 'nomor_induk', 'no_hp', 'is_active',
-    ];
+    public const AKTIF = 'aktif';
+    public const NONAKTIF = 'nonaktif';
+    public const MENUNGGU = 'menunggu';
+
+    protected $fillable = ['username', 'email', 'password', 'role', 'status', 'last_login_at'];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_active' => 'boolean',
-        ];
+        return ['password' => 'hashed', 'last_login_at' => 'datetime'];
     }
 
-    public function isAdmin(): bool
+    public function mahasiswa(): HasOne
     {
-        return $this->role === self::ADMIN;
+        return $this->hasOne(Mahasiswa::class);
     }
 
-    public function isMahasiswa(): bool
+    public function dosen(): HasOne
     {
-        return $this->role === self::MAHASISWA;
+        return $this->hasOne(DosenPembimbing::class);
     }
 
-    public function isPembimbing(): bool
+    public function notifikasi(): HasMany
     {
-        return $this->role === self::PEMBIMBING;
+        return $this->hasMany(Notifikasi::class)->latest('id');
+    }
+
+    public function isAdmin(): bool { return $this->role === self::ADMIN; }
+    public function isMahasiswa(): bool { return $this->role === self::MAHASISWA; }
+    public function isPembimbing(): bool { return $this->role === self::PEMBIMBING; }
+
+    /** Profil detail sesuai peran. */
+    public function profil(): Mahasiswa|DosenPembimbing|null
+    {
+        return match ($this->role) {
+            self::MAHASISWA => $this->mahasiswa,
+            self::PEMBIMBING => $this->dosen,
+            default => null,
+        };
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->profil()?->nama_lengkap ?? $this->username;
+    }
+
+    public function getNomorIndukAttribute(): ?string
+    {
+        return $this->mahasiswa?->nim ?? $this->dosen?->nidn;
+    }
+
+    public function getNoHpAttribute(): ?string
+    {
+        return $this->profil()?->no_hp;
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        return $this->status === self::AKTIF;
     }
 
     public function getPeranLabelAttribute(): string
     {
         return self::PERAN[$this->role] ?? ucfirst((string) $this->role);
-    }
-
-    /** Semua pengajuan KPI milik mahasiswa ini. */
-    public function pengajuanKpi(): HasMany
-    {
-        return $this->hasMany(PengajuanKpi::class, 'mahasiswa_id');
-    }
-
-    /** Pengajuan paling baru milik mahasiswa ini (apa pun statusnya). */
-    public function pengajuanTerakhir(): HasOne
-    {
-        return $this->hasOne(PengajuanKpi::class, 'mahasiswa_id')->latestOfMany();
-    }
-
-    /** Pengajuan KPI yang dibimbing oleh dosen ini. */
-    public function mahasiswaBimbingan(): HasMany
-    {
-        return $this->hasMany(PengajuanKpi::class, 'pembimbing_id');
-    }
-
-    /** Pengajuan yang masih menunggu atau sedang berjalan (maksimal satu). */
-    public function pengajuanAktif(): ?PengajuanKpi
-    {
-        return $this->pengajuanKpi()
-            ->whereIn('status', [PengajuanKpi::DIAJUKAN, PengajuanKpi::BERJALAN])
-            ->latest()
-            ->first();
     }
 }
