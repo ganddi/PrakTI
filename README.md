@@ -4,7 +4,18 @@ Sistem informasi KPI mahasiswa Program Studi Informatika, disusun mengikuti **SR
 
 ## 1. Instalasi di Laragon
 
+<<<<<<< HEAD
 1. Buat proyek Laravel baru (SDD menetapkan Laravel 13; struktur kode ini berjalan di Laravel 11 ke atas):
+=======
+## 1. Kebutuhan sistem
+- Laragon (atau XAMPP) dengan PHP sesuai versi Laravel yang dipakai (Laravel 11 butuh minimal PHP 8.2) dan MySQL
+- Composer
+- Laravel 11 ke atas (struktur `bootstrap/app.php` versi baru)
+
+## 2. Instalasi
+
+1. Buat proyek Laravel baru dari terminal Laragon:
+>>>>>>> aa6bd4ecd7f64f75723ad2558187ad82ef558c08
 
    ```bash
    cd C:\laragon\www
