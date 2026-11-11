@@ -4,8 +4,7 @@ Sistem informasi berbasis web untuk mengelola Kerja Praktik Industri (KPI) mahas
 
 Folder ini berisi file aplikasi (model, controller, view, migrasi, seeder) yang dipasang di atas proyek Laravel baru.
 
-## 1. Kebutuhan
-
+## 1. Kebutuhan sistem
 - Laragon (atau XAMPP) dengan PHP sesuai versi Laravel yang dipakai (Laravel 11 butuh minimal PHP 8.2) dan MySQL
 - Composer
 - Laravel 11 ke atas (struktur `bootstrap/app.php` versi baru)
