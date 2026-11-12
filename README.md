@@ -7,7 +7,7 @@ Sistem informasi KPI mahasiswa Program Studi Informatika, disusun mengikuti **SR
 <<<<<<< HEAD
 1. Buat proyek Laravel baru (SDD menetapkan Laravel 13; struktur kode ini berjalan di Laravel 11 ke atas):
 =======
-## 1. Kebutuhan sistem
+## 1. Kebutuhan Sistem
 - Laragon (atau XAMPP) dengan PHP sesuai versi Laravel yang dipakai (Laravel 11 butuh minimal PHP 8.2) dan MySQL
 - Composer
 - Laravel 11 ke atas (struktur `bootstrap/app.php` versi baru)
