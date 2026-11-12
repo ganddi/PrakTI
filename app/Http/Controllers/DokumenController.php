@@ -37,8 +37,8 @@ class DokumenController extends Controller
 
     private function kirim(string $path, string $nama, bool $lihat = false)
     {
-        abort_unless(Storage::disk('local')->exists($path), 404, 'Berkas tidak ditemukan di server.');
+        abort_unless(Storage::disk()->exists($path), 404, 'Berkas tidak ditemukan di server.');
 
-        return $lihat ? Storage::disk('local')->response($path, $nama) : Storage::disk('local')->download($path, $nama);
+        return $lihat ? Storage::disk()->response($path, $nama) : Storage::disk()->download($path, $nama);
     }
 }

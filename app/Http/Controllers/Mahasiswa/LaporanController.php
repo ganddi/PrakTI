@@ -37,7 +37,7 @@ class LaporanController extends Controller
         $laporan = LaporanKpi::create([
             'mahasiswa_id' => $pengajuan->mahasiswa_id,
             'nama_file' => \App\Support\Berkas::namaAman($berkas),
-            'path_file' => $berkas->store("laporan/{$pengajuan->mahasiswa_id}", 'local'),
+            'path_file' => $berkas->store("laporan/{$pengajuan->mahasiswa_id}", config('filesystems.default')),
             'versi' => (string) ((int) ($terakhir?->versi ?? 0) + 1),
             'status' => LaporanKpi::MENUNGGU,
             'tanggal_upload' => now(),

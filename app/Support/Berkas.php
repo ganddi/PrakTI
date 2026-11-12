@@ -34,7 +34,7 @@ class Berkas
             'nama_file' => self::namaAman($berkas),
             'format_file' => substr(strtolower($berkas->getClientOriginalExtension()), 0, 20),
             'ukuran_file' => $berkas->getSize(),
-            'path_file' => $berkas->store("dokumen/{$pengajuan->mahasiswa_id}", 'local'),
+            'path_file' => $berkas->store("dokumen/{$pengajuan->mahasiswa_id}", config('filesystems.default')),
             'status_verifikasi' => in_array($jenis, DokumenKpi::PERLU_VERIFIKASI, true) ? DokumenKpi::MENUNGGU : DokumenKpi::TERSIMPAN,
             'uploaded_at' => now(),
         ]);

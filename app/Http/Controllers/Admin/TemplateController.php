@@ -35,7 +35,7 @@ class TemplateController extends Controller
     {
         $path = Template::pathDariKode($kode);
         abort_unless($path, 404);
-        Storage::disk('local')->delete($path);
+        Storage::disk()->delete($path);
 
         return back()->with('sukses', 'Template dihapus.');
     }

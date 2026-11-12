@@ -21,12 +21,12 @@ class Template
 
     public static function daftar(string $jenis): Collection
     {
-        return collect(Storage::disk('local')->files("template/{$jenis}"))
+        return collect(Storage::disk()->files("template/{$jenis}"))
             ->map(fn ($path) => (object) [
                 'jenis' => $jenis,
                 'path' => $path,
                 'nama' => basename($path),
-                'ukuran' => Berkas::ukuran(Storage::disk('local')->size($path)),
+                'ukuran' => Berkas::ukuran(Storage::disk()->size($path)),
                 'kode' => rtrim(strtr(base64_encode($path), '+/', '-_'), '='),
             ])->sortBy('nama')->values();
     }
@@ -34,7 +34,7 @@ class Template
     public static function simpan(string $jenis, UploadedFile $berkas): void
     {
         $nama = preg_replace('/[^A-Za-z0-9._-]+/', '_', $berkas->getClientOriginalName());
-        $berkas->storeAs("template/{$jenis}", $nama, 'local');
+        $berkas->storeAs("template/{$jenis}", $nama, config('filesystems.default'));
     }
 
     /** Path aman dari kode unduhan (mencegah akses di luar folder template). */
@@ -43,6 +43,6 @@ class Template
         $b64 = strtr($kode, '-_', '+/');
         $path = base64_decode(str_pad($b64, strlen($b64) + (4 - strlen($b64) % 4) % 4, '='), true);
 
-        return $path && str_starts_with($path, 'template/') && ! str_contains($path, '..') && Storage::disk('local')->exists($path) ? $path : null;
+        return $path && str_starts_with($path, 'template/') && ! str_contains($path, '..') && Storage::disk()->exists($path) ? $path : null;
     }
 }
