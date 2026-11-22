@@ -7,7 +7,7 @@
     <section class="pk-panel pk-letter-panel" style="max-width: 900px">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
             <div><h2 class="pk-panel-title mb-1">Nomor surat saat ini</h2><p class="mb-0 fw-semibold">{{ $surat->nomor_surat }}</p></div>
-            <div class="d-flex gap-2"><a href="{{ route('admin.pengajuan.surat.lihat', $pengajuan) }}" class="btn btn-outline-secondary"><i class="bi bi-eye me-1"></i>Lihat pratinjau</a><a href="{{ route('admin.pengajuan.surat.unduh', $pengajuan) }}" class="btn btn-outline-primary"><i class="bi bi-download me-1"></i>Unduh DOCX</a></div>
+            <div class="d-flex gap-2"><a href="{{ route('admin.pengajuan.surat.lihat', $pengajuan) }}" class="btn btn-outline-secondary"><i class="bi bi-eye me-1"></i>Lihat pratinjau</a><a href="{{ route('admin.pengajuan.surat.unduh', $pengajuan) }}" class="btn btn-outline-primary"><i class="bi bi-download me-1"></i>Unduh</a></div>
         </div>
         <form method="POST" action="{{ route('admin.pengajuan.surat.update', $pengajuan) }}">
             @csrf @method('PUT')

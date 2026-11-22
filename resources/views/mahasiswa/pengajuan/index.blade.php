@@ -30,7 +30,7 @@
             @php $suratPermohonan = $pengajuan->suratPermohonan; @endphp
             <section class="pk-panel pk-letter-panel mb-4" id="surat">
                 <h2 class="pk-panel-title mb-1">Surat KPI</h2>
-                <p class="small text-secondary mb-3">Isi data surat permohonan untuk mengunduh surat siap cetak, kirimkan ke instansi, lalu unggah surat balasan yang Anda terima.</p>
+                <p class="small text-secondary mb-3">Isi data surat permohonan, unduh atau cetak suratnya, lalu unggah surat balasan yang Anda terima.</p>
                 <div class="row g-4">
                     <div class="col-lg-6">
                         <h3 class="pk-subtitle">1. Siapkan surat permohonan</h3>
@@ -50,8 +50,8 @@
                             <p class="small text-secondary mb-3">Periode KPI: {{ ($suratPermohonan?->tanggal_mulai ?? $pengajuan->tanggal_mulai)->translatedFormat('d F Y') }} – {{ ($suratPermohonan?->tanggal_selesai ?? $pengajuan->tanggal_selesai)->translatedFormat('d F Y') }}. Admin dapat menyesuaikan tanggal dan data surat bila diperlukan.</p>
                             @include('partials.surat-anggota-fields', ['pengajuan' => $pengajuan, 'surat' => $suratPermohonan, 'kunciAnggotaPertama' => true])
                             <div class="d-flex flex-wrap gap-2 mt-2">
-                                <button type="submit" name="aksi" value="unduh" class="btn btn-primary"><i class="bi bi-file-earmark-word me-1" aria-hidden="true"></i>{{ $suratPermohonan ? 'Simpan dan unduh DOCX' : 'Buat dan unduh DOCX' }}</button>
-                                <button type="submit" name="aksi" value="pratinjau" formtarget="_blank" class="btn btn-outline-primary"><i class="bi bi-eye me-1" aria-hidden="true"></i>Pratinjau surat</button>
+                                <button type="submit" name="aksi" value="unduh" class="btn btn-primary"><i class="bi bi-download me-1" aria-hidden="true"></i>Unduh</button>
+                                <button type="submit" name="aksi" value="cetak" formtarget="_blank" class="btn btn-outline-primary"><i class="bi bi-printer me-1" aria-hidden="true"></i>Cetak</button>
                             </div>
                         </form>
                     </div>

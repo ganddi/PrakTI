@@ -6,14 +6,14 @@ use App\Models\AktivitasSistem;
 use App\Models\PengajuanKpi;
 use App\Models\PengaturanSurat;
 use App\Models\SuratPermohonanKpi;
-use App\Support\SuratPermohonanGenerator;
+use App\Support\SuratPermohonanPdfGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class SuratPermohonanController extends Controller
 {
-    public function simpanMahasiswa(Request $request, PengajuanKpi $pengajuan, SuratPermohonanGenerator $generator)
+    public function simpanMahasiswa(Request $request, PengajuanKpi $pengajuan, SuratPermohonanPdfGenerator $generator)
     {
         abort_unless($pengajuan->mahasiswa_id === $request->user()->mahasiswa?->id, 403);
         abort_unless(in_array($pengajuan->status, [PengajuanKpi::DISETUJUI, PengajuanKpi::BERJALAN, PengajuanKpi::SELESAI], true), 403);
@@ -66,7 +66,7 @@ class SuratPermohonanController extends Controller
 
         AktivitasSistem::catat('Menyiapkan surat permohonan KPI', 'surat', $pengajuan->mahasiswa_id, $surat->nomor_surat);
 
-        if ($request->input('aksi') === 'pratinjau') {
+        if (in_array($request->input('aksi'), ['pratinjau', 'cetak'], true)) {
             return view('mahasiswa.pengajuan.surat-preview', compact('pengajuan', 'surat'));
         }
 
@@ -83,7 +83,7 @@ class SuratPermohonanController extends Controller
         return view('mahasiswa.pengajuan.surat-preview', compact('pengajuan', 'surat'));
     }
 
-    public function unduhMahasiswa(Request $request, PengajuanKpi $pengajuan, SuratPermohonanGenerator $generator)
+    public function unduhMahasiswa(Request $request, PengajuanKpi $pengajuan, SuratPermohonanPdfGenerator $generator)
     {
         abort_unless($pengajuan->mahasiswa_id === $request->user()->mahasiswa?->id, 403);
         abort_unless(in_array($pengajuan->status, [PengajuanKpi::DISETUJUI, PengajuanKpi::BERJALAN, PengajuanKpi::SELESAI], true), 403);
@@ -98,7 +98,7 @@ class SuratPermohonanController extends Controller
         return view('admin.pengajuan.surat', compact('pengajuan', 'surat'));
     }
 
-    public function unduhAdmin(PengajuanKpi $pengajuan, SuratPermohonanGenerator $generator)
+    public function unduhAdmin(PengajuanKpi $pengajuan, SuratPermohonanPdfGenerator $generator)
     {
         return $generator->unduh($pengajuan->suratPermohonan()->with('pengajuan.mahasiswa')->firstOrFail());
     }

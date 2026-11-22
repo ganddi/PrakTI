@@ -53,7 +53,7 @@
 </head>
 <body>
 <div class="toolbar">
-    <button type="button" onclick="window.print()">Cetak atau simpan sebagai PDF</button>
+    <button type="button" onclick="window.print()">Cetak</button>
     @yield('aksi-cetak')
     @hasSection('aksi-kembali')
         @yield('aksi-kembali')

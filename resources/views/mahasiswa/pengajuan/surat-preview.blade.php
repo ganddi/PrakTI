@@ -2,9 +2,9 @@
 @section('judul', 'Pratinjau surat permohonan KPI')
 @section('aksi-cetak')
     @if (auth()->user()->isAdmin())
-        <a href="{{ route('admin.pengajuan.surat.unduh', $pengajuan) }}">Unduh DOCX</a>
+        <a href="{{ route('admin.pengajuan.surat.unduh', $pengajuan) }}">Unduh</a>
     @else
-        <a href="{{ route('mahasiswa.pengajuan.surat-permohonan.unduh', $pengajuan) }}">Unduh DOCX</a>
+        <a href="{{ route('mahasiswa.pengajuan.surat-permohonan.unduh', $pengajuan) }}">Unduh</a>
     @endif
 @endsection
 
@@ -70,4 +70,7 @@
         <div class="surat-signature-name">{{ $surat->nama_penandatangan }}</div>
         <div>NIP. {{ $surat->nip_penandatangan }}</div>
     </div>
+    @if (request('aksi') === 'cetak')
+        <script>window.addEventListener('load', () => window.print());</script>
+    @endif
 @endsection
