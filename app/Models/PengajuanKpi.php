@@ -41,6 +41,7 @@ class PengajuanKpi extends Model
     public function periode(): BelongsTo { return $this->belongsTo(PeriodeKpi::class, 'periode_id'); }
     public function tempatKpi(): BelongsTo { return $this->belongsTo(TempatKpi::class); }
     public function dokumen(): HasMany { return $this->hasMany(DokumenKpi::class, 'pengajuan_id')->latest('id'); }
+    public function suratPermohonan(): HasOne { return $this->hasOne(SuratPermohonanKpi::class, 'pengajuan_id'); }
 
     public function logbooks(): HasMany { return $this->hasMany(Logbook::class, 'mahasiswa_id', 'mahasiswa_id')->orderByDesc('tanggal'); }
     public function laporan(): HasMany { return $this->hasMany(LaporanKpi::class, 'mahasiswa_id', 'mahasiswa_id')->latest('id'); }

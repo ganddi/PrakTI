@@ -37,7 +37,7 @@ class PengajuanController extends Controller
 
     public function show(PengajuanKpi $pengajuan)
     {
-        $pengajuan->load(['mahasiswa.user', 'tempatKpi', 'periode', 'kelompok.penempatan.dosen', 'dokumen', 'logbooks', 'laporan', 'laporanTerakhir', 'penilaian', 'nilaiAkhir', 'riwayat.user']);
+        $pengajuan->load(['mahasiswa.user', 'tempatKpi', 'periode', 'kelompok.penempatan.dosen', 'dokumen', 'suratPermohonan', 'logbooks', 'laporan', 'laporanTerakhir', 'penilaian', 'nilaiAkhir', 'riwayat.user']);
 
         return view('admin.pengajuan.show', compact('pengajuan'));
     }

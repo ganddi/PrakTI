@@ -1,6 +1,34 @@
 // PrakTI — interaksi di sisi browser (tanpa build step)
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (event) => {
+    const tambahAnggota = event.target.closest('[data-tambah-anggota]');
+    if (tambahAnggota) {
+      const form = tambahAnggota.closest('[data-anggota-form]');
+      const daftar = form.querySelector('[data-anggota-list]');
+      const jumlah = daftar.querySelectorAll('[data-anggota-row]').length;
+      if (jumlah < 4) {
+        const index = Number(daftar.dataset.nextIndex);
+        const template = form.querySelector('[data-anggota-template]').innerHTML.replaceAll('__INDEX__', String(index));
+        daftar.insertAdjacentHTML('beforeend', template);
+        daftar.dataset.nextIndex = String(index + 1);
+        perbaruiTombolAnggota(form);
+      }
+      return;
+    }
+
+    const hapusAnggota = event.target.closest('[data-hapus-anggota]');
+    if (hapusAnggota) {
+      const form = hapusAnggota.closest('[data-anggota-form]');
+      if (form.querySelectorAll('[data-anggota-row]').length > 1) {
+        hapusAnggota.closest('[data-anggota-row]').remove();
+        form.querySelectorAll('[data-label-anggota]').forEach((label, index) => {
+          label.textContent = `Anggota ${index + 1} — nama`;
+        });
+        perbaruiTombolAnggota(form);
+      }
+      return;
+    }
+
     const tombol = event.target.closest('[data-password-toggle]');
     if (!tombol) return;
 
@@ -14,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     tombol.title = tampil ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi';
     tombol.querySelector('i').className = tampil ? 'bi bi-eye-slash' : 'bi bi-eye';
   });
+
+  function perbaruiTombolAnggota(form) {
+    const tombol = form.querySelector('[data-tambah-anggota]');
+    tombol.disabled = form.querySelectorAll('[data-anggota-row]').length >= 4;
+  }
 
   /* ---------------------------------------------------------------
    * Modal konfirmasi untuk tindakan penting (Look & Feel #18)
@@ -81,6 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     delete form.dataset.terkonfirmasi;
+
+    // Jangan menahan tombol pada halaman asal untuk submit yang dibuka di tab baru.
+    // Form pratinjau surat memakai formtarget="_blank" sehingga halaman ini tetap terbuka.
+    const target = tombol?.getAttribute('formtarget') || form.getAttribute('target');
+    if (target?.toLowerCase() === '_blank') return;
 
     // Indikator proses (NFR-02, Look & Feel #25). Nilai tombol submit disalin ke input tersembunyi
     // karena tombol yang dinonaktifkan tidak ikut terkirim.

@@ -466,6 +466,11 @@ details.pk-panel > summary { cursor: pointer; }
 .pk-instruction-alert > div i { color: #B8860B; }
 .pk-instruction-alert ul { margin-top: .5rem; }
 .pk-instruction-alert li + li { margin-top: .25rem; }
+.pk-letter-panel { background: #FFFCF3; border-color: #E7C766; box-shadow: 0 3px 12px rgba(31, 58, 95, .07); }
+.pk-letter-panel > .pk-panel-title { color: var(--pk-ink-dark); }
+.pk-letter-form { padding: 1rem; border: 1px solid #F0DFA8; border-radius: 10px; background: rgba(255, 255, 255, .82); }
+.pk-remove-member { display: inline-grid; place-items: center; width: 2.25rem; max-width: 100%; height: 2.25rem; padding: 0; line-height: 1; }
+.pk-remove-member i { font-size: 1rem; }
 .pk-logo-sub { font-size: .625rem; font-weight: 500; color: #9FB2CA; margin-top: .2rem; letter-spacing: 0; }
 .pk-user { display: flex; align-items: center; gap: .625rem; color: inherit; text-decoration: none; }
 .pk-avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: grid; place-items: center; background: var(--pk-ink-soft); color: var(--pk-ink); font-weight: 700; }

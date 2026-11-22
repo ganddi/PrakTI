@@ -3,6 +3,14 @@
 
 @section('content')
     <a href="{{ route('admin.pengajuan.index', ['status' => $pengajuan->status]) }}" class="pk-back"><i class="bi bi-arrow-left"></i>Kembali ke daftar pengajuan</a>
+    @if ($pengajuan->suratPermohonan)
+        <section class="pk-panel mb-4 pk-letter-panel">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div><h2 class="pk-panel-title mb-1">Surat permohonan KPI</h2><p class="small text-secondary mb-0">Nomor {{ $pengajuan->suratPermohonan->nomor_surat }} · {{ $pengajuan->suratPermohonan->nama_instansi }}</p></div>
+                <div class="d-flex gap-2"><a href="{{ route('admin.pengajuan.surat.lihat', $pengajuan) }}" class="btn btn-outline-secondary"><i class="bi bi-eye me-1"></i>Pratinjau</a><a href="{{ route('admin.pengajuan.surat.unduh', $pengajuan) }}" class="btn btn-outline-primary"><i class="bi bi-download me-1"></i>Unduh DOCX</a><a href="{{ route('admin.pengajuan.surat.edit', $pengajuan) }}" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Edit surat</a></div>
+            </div>
+        </section>
+    @endif
     @if ($pengajuan->status === 'diajukan')
         <section class="pk-panel mb-4">
             <h2 class="pk-panel-title mb-1">Verifikasi pengajuan</h2>

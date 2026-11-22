@@ -11,7 +11,6 @@ use App\Models\PeriodeKpi;
 use App\Models\TempatKpi;
 use App\Models\User;
 use App\Support\Berkas;
-use App\Support\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -21,9 +20,9 @@ class PengajuanController extends Controller
 {
     public function index(Request $request)
     {
-        $pengajuan = $request->user()->mahasiswa->pengajuanTerakhir()->with(['dokumen', 'tempatKpi', 'periode', 'kelompok'])->first();
+        $pengajuan = $request->user()->mahasiswa->pengajuanTerakhir()->with(['dokumen', 'tempatKpi', 'periode', 'kelompok', 'suratPermohonan'])->first();
 
-        return view('mahasiswa.pengajuan.index', ['pengajuan' => $pengajuan, 'templateSurat' => Template::daftar('surat_permohonan')]);
+        return view('mahasiswa.pengajuan.index', ['pengajuan' => $pengajuan]);
     }
 
     public function create(Request $request)

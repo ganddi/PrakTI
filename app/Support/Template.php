@@ -7,13 +7,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Template dokumen (FR-06, FR-14, FR-17) disimpan sebagai berkas di storage/app/private/template/{jenis}.
- * SDD tidak mendefinisikan tabel template, sehingga tidak ada tabel tambahan.
+ * Template logbook, laporan, dan penilaian tersimpan sebagai berkas privat.
+ * Surat permohonan KPI dibuat melalui SuratPermohonanGenerator dari template resmi di resources/templates.
  */
 class Template
 {
     public const JENIS = [
-        'surat_permohonan' => 'Template surat permohonan KPI',
         'logbook' => 'Template logbook KPI',
         'laporan' => 'Template laporan KPI',
         'penilaian' => 'Template penilaian penguji & pembimbing lapangan',
