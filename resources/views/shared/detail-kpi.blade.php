@@ -65,6 +65,6 @@
             @include('shared.penilaian', ['pengajuan' => $pengajuan, 'tampilkanDraf' => $mode === 'pembimbing'])
         </section>
     </div>
-    <div class="tab-pane fade {{ $awalDokumen ? 'show active' : '' }}" id="tab-dokumen" role="tabpanel">@include('shared.dokumen', ['dokumen' => $pengajuan->dokumen])</div>
+    <div class="tab-pane fade {{ $awalDokumen ? 'show active' : '' }}" id="tab-dokumen" role="tabpanel">@include('shared.dokumen', ['dokumen' => $pengajuan->dokumen, 'pengajuan' => $pengajuan])</div>
     <div class="tab-pane fade" id="tab-riwayat" role="tabpanel"><section class="pk-panel">@include('shared.riwayat', ['aktivitas' => $pengajuan->riwayat])</section></div>
 </div>

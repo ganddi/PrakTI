@@ -6,7 +6,15 @@
     @if ($type === 'textarea')
         <textarea id="{{ $name }}" name="{{ $name }}" @required($required)
             {{ $attributes->merge(['class' => 'form-control'.($errors->has($name) ? ' is-invalid' : ''), 'rows' => 4]) }}>{{ old($name, $value) }}</textarea>
-    @elseif (in_array($type, ['password', 'file'], true))
+    @elseif ($type === 'password')
+        <div class="pk-password-field">
+            <input id="{{ $name }}" name="{{ $name }}" type="password" @required($required)
+                {{ $attributes->merge(['class' => 'form-control pk-password-input'.($errors->has($name) ? ' is-invalid' : '')]) }}>
+            <button class="pk-password-toggle" type="button" data-password-toggle aria-label="Tampilkan kata sandi" aria-pressed="false" aria-controls="{{ $name }}" title="Tampilkan kata sandi">
+                <i class="bi bi-eye" aria-hidden="true"></i>
+            </button>
+        </div>
+    @elseif ($type === 'file')
         <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" @required($required)
             {{ $attributes->merge(['class' => 'form-control'.($errors->has($name) ? ' is-invalid' : '')]) }}>
     @else

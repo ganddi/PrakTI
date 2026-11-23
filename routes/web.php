@@ -10,6 +10,7 @@ use App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\Pembimbing;
 use App\Http\Controllers\PengaturanController;
+use App\Http\Controllers\SuratPermohonanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('beranda');
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'role:admin,mahasiswa,pembimbing'])->group(function (
     Route::controller(PengaturanController::class)->group(function () {
         Route::get('/pengaturan', 'edit')->name('pengaturan');
         Route::put('/pengaturan/profil', 'profil')->name('pengaturan.profil');
+        Route::delete('/pengaturan/foto', 'hapusFoto')->name('pengaturan.foto.hapus');
         Route::put('/pengaturan/kata-sandi', 'kataSandi')->name('pengaturan.sandi');
     });
 
@@ -60,10 +62,17 @@ Route::middleware(['auth', 'role:admin,mahasiswa,pembimbing'])->group(function (
             Route::get('pengajuan', 'index')->name('pengajuan.index');
             Route::get('pengajuan/{pengajuan}', 'show')->name('pengajuan.show');
             Route::patch('pengajuan/{pengajuan}/verifikasi', 'verifikasi')->name('pengajuan.verifikasi');
+        Route::get('pengajuan/{pengajuan}/surat-permohonan', [SuratPermohonanController::class, 'editAdmin'])->name('pengajuan.surat.edit');
+        Route::get('pengajuan/{pengajuan}/surat-permohonan/lihat', [SuratPermohonanController::class, 'lihatAdmin'])->name('pengajuan.surat.lihat');
+        Route::get('pengajuan/{pengajuan}/surat-permohonan/unduh', [SuratPermohonanController::class, 'unduhAdmin'])->name('pengajuan.surat.unduh');
+        Route::put('pengajuan/{pengajuan}/surat-permohonan', [SuratPermohonanController::class, 'updateAdmin'])->name('pengajuan.surat.update');
         });
 
         Route::get('verifikasi-dokumen', [Admin\VerifikasiDokumenController::class, 'index'])->name('verifikasi.index');
         Route::patch('verifikasi-dokumen/{dokumen}', [Admin\VerifikasiDokumenController::class, 'update'])->name('verifikasi.update');
+        Route::post('pengajuan/{pengajuan}/dokumen', [Admin\DokumenController::class, 'store'])->name('pengajuan.dokumen.store');
+        Route::put('dokumen/{dokumen}', [Admin\DokumenController::class, 'update'])->name('dokumen.update');
+        Route::delete('dokumen/{dokumen}', [Admin\DokumenController::class, 'destroy'])->name('dokumen.destroy');
 
         Route::resource('periode', Admin\PeriodeController::class)->except(['create', 'edit'])->parameters(['periode' => 'periode']);
         Route::controller(Admin\KelompokController::class)->group(function () {
@@ -90,6 +99,7 @@ Route::middleware(['auth', 'role:admin,mahasiswa,pembimbing'])->group(function (
 
         Route::get('template', [Admin\TemplateController::class, 'index'])->name('template.index');
         Route::post('template', [Admin\TemplateController::class, 'store'])->name('template.store');
+        Route::put('template/pengaturan-surat', [Admin\TemplateController::class, 'updatePengaturanSurat'])->name('template.pengaturan-surat');
         Route::delete('template/{kode}', [Admin\TemplateController::class, 'destroy'])->name('template.destroy');
 
         Route::resource('tempat', Admin\TempatKpiController::class)->except('show')->parameters(['tempat' => 'tempat']);
@@ -104,6 +114,9 @@ Route::middleware(['auth', 'role:admin,mahasiswa,pembimbing'])->group(function (
             Route::post('pengajuan', 'store')->name('pengajuan.store');
             Route::get('pengajuan/{pengajuan}/perbaiki', 'edit')->name('pengajuan.edit');
             Route::put('pengajuan/{pengajuan}', 'update')->name('pengajuan.update');
+            Route::post('pengajuan/{pengajuan}/surat-permohonan', [SuratPermohonanController::class, 'simpanMahasiswa'])->name('pengajuan.surat-permohonan');
+            Route::get('pengajuan/{pengajuan}/surat-permohonan/lihat', [SuratPermohonanController::class, 'lihatMahasiswa'])->name('pengajuan.surat-permohonan.lihat');
+            Route::get('pengajuan/{pengajuan}/surat-permohonan/unduh', [SuratPermohonanController::class, 'unduhMahasiswa'])->name('pengajuan.surat-permohonan.unduh');
             Route::post('pengajuan/{pengajuan}/surat-balasan', 'suratBalasan')->name('pengajuan.surat-balasan');
             Route::post('pengajuan/{pengajuan}/dokumen', 'unggahDokumen')->name('pengajuan.dokumen');
         });

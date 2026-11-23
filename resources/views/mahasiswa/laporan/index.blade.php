@@ -11,7 +11,7 @@
             <div class="col-lg-7">
                 <section class="pk-panel h-100">
                     <h2 class="pk-panel-title mb-3">Status laporan</h2>
-                    @if (! $akhir)<p class="mb-0">Belum ada laporan. Gunakan template laporan program studi.</p>
+                    @if (! $akhir)<p class="mb-0">Belum ada laporan. Tolong gunakan template laporan program studi.</p>
                     @elseif ($akhir->status === 'revisi')
                         <div class="alert alert-danger mb-0"><div class="fw-semibold">Versi {{ $akhir->versi }} perlu direvisi</div>
                             {{ $akhir->tanda_terbuka }} bagian ditandai <mark>kuning</mark> oleh {{ $pengajuan->pembimbing?->nama_lengkap ?? 'dosen pembimbing' }}. Perbaiki lalu unggah versi baru.</div>

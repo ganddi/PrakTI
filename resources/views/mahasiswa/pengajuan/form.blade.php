@@ -8,7 +8,7 @@
         <div class="alert alert-warning" style="max-width: 820px">Belum ada periode KPI yang dibuka. Hubungi admin program studi Informatika.</div>
     @else
         @if ($pengajuan->exists && $pengajuan->catatan_admin)<div class="alert alert-warning" style="max-width: 820px"><div class="fw-semibold mb-1">Catatan perbaikan dari admin</div>{{ $pengajuan->catatan_admin }}</div>@endif
-        <div class="alert alert-secondary" style="max-width: 820px"><div class="fw-semibold mb-1">Siapkan dokumen berikut sebelum mengirim</div>
+        <div class="alert pk-instruction-alert" role="note" style="max-width: 820px"><div class="fw-semibold mb-1"><i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>Siapkan dokumen berikut sebelum mengirim</div>
             <ul class="mb-0 ps-3">@foreach (config('prakti.persyaratan_pengajuan') as $s)<li>{{ $s }}</li>@endforeach</ul></div>
 
         @php $pilihan = old('tempat_kpi_id', $pengajuan->tempatKpi?->status === 'aktif' ? $pengajuan->tempat_kpi_id : ''); $usulan = $pengajuan->tempatKpi?->status === 'usulan' ? $pengajuan->tempatKpi : null; @endphp
@@ -43,15 +43,11 @@
                             <div class="col-md-6"><x-input name="provinsi" label="Provinsi" :value="$usulan?->provinsi ?? 'Sulawesi Barat'" :required="true" /></div>
                         </div>
                         <div class="row g-3">
-                            <div class="col-md-4"><x-input name="nama_pic" label="Nama penanggung jawab" :value="$usulan?->nama_pic" /></div>
+                            <div class="col-md-4"><x-input name="nama_pic" label="Nama PJ/Karyawan Instansi" :value="$usulan?->nama_pic" /></div>
                             <div class="col-md-4"><x-input name="no_hp_pic" label="Nomor telepon" :value="$usulan?->no_hp_pic" /></div>
                             <div class="col-md-4"><x-input name="email_pic" label="Email" type="email" :value="$usulan?->email_pic" /></div>
                         </div>
                     </div>
-                </div>
-                <div class="pk-form-section">
-                    <h2>Keperluan</h2>
-                    <x-input name="keperluan" label="Tujuan atau rencana kegiatan KPI" type="textarea" rows="3" :value="$pengajuan->keperluan" :required="true" hint="Minimal 20 karakter." />
                 </div>
                 <div class="pk-form-section">
                     <h2>Dokumen persyaratan</h2>

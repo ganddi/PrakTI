@@ -60,8 +60,7 @@
 <div class="pk-sidebar-inner">
     <div class="pk-brand">
         <a href="{{ route('dashboard') }}" class="pk-logo">
-            <span class="pk-logo-mark"><i class="bi bi-journal-text"></i></span>
-            <span class="d-flex flex-column lh-1">PrakTI<small class="pk-logo-sub">Platform Kerja Praktik Industri</small></span>
+            <img src="{{ asset('images/prakti-logo.svg') }}" alt="PrakTI — Platform Kerja Praktik Industri" class="pk-logo-image">
         </a>
         <button type="button" class="btn-close btn-close-white d-lg-none ms-auto" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Tutup menu"></button>
     </div>

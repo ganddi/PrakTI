@@ -23,19 +23,37 @@
                 <div><dt>Jenis instansi</dt><dd>{{ $pengajuan->bidang_kerja }}</dd></div>
                 <div><dt>Alamat instansi</dt><dd class="fw-normal">{{ $pengajuan->alamat_instansi }}</dd></div>
                 <div><dt>Kontak instansi</dt><dd>{{ $pengajuan->pembimbing_lapangan ?: '–' }}<span class="d-block fw-normal small text-secondary">{{ $pengajuan->kontak_instansi }}</span></dd></div>
-                <div><dt>Keperluan</dt><dd class="fw-normal">{{ $pengajuan->keperluan }}</dd></div>
             </dl>
         </section>
 
         @if (in_array($pengajuan->status, ['disetujui', 'berjalan', 'selesai']))
-            <section class="pk-panel mb-4" id="surat">
+            @php $suratPermohonan = $pengajuan->suratPermohonan; @endphp
+            <section class="pk-panel pk-letter-panel mb-4" id="surat">
                 <h2 class="pk-panel-title mb-1">Surat KPI</h2>
-                <p class="small text-secondary mb-3">Unduh template surat permohonan, lengkapi dan kirimkan ke instansi, lalu unggah surat balasan yang Anda terima.</p>
+                <p class="small text-secondary mb-3">Isi data surat permohonan, unduh atau cetak suratnya, lalu unggah surat balasan yang Anda terima.</p>
                 <div class="row g-4">
                     <div class="col-lg-6">
-                        <h3 class="pk-subtitle">1. Template surat permohonan</h3>
-                        @forelse ($templateSurat as $t)<x-berkas :href="route('template.unduh', $t->kode)" :nama="$t->nama" :ukuran="$t->ukuran" class="mb-2" />
-                        @empty<p class="text-secondary small">Admin belum mengunggah template surat permohonan.</p>@endforelse
+                        <h3 class="pk-subtitle">1. Siapkan surat permohonan</h3>
+                        @if ($suratPermohonan)
+                            <div class="alert alert-success py-2 mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                <span>Nomor surat Anda: <strong>{{ $suratPermohonan->nomor_surat }}</strong></span>
+                                <a href="{{ route('mahasiswa.pengajuan.surat-permohonan.lihat', $pengajuan) }}" class="btn btn-sm btn-outline-success"><i class="bi bi-eye me-1" aria-hidden="true"></i>Lihat overview surat</a>
+                            </div>
+                        @endif
+                        <form method="POST" action="{{ route('mahasiswa.pengajuan.surat-permohonan', $pengajuan) }}" class="pk-letter-form">
+                            @csrf
+                            <x-input name="penerima" label="Penerima surat" :value="$suratPermohonan?->penerima ?? 'Pimpinan'" :required="true" hint="Contoh: Kepala Dinas atau Pimpinan perusahaan." />
+                            <div class="row g-3">
+                                <div class="col-md-7"><x-input name="nama_instansi" label="Nama instansi" :value="$suratPermohonan?->nama_instansi ?? $pengajuan->nama_instansi" :required="true" /></div>
+                                <div class="col-md-5"><x-input name="kota_instansi" label="Kota/kabupaten instansi" :value="$suratPermohonan?->kota_instansi ?? $pengajuan->tempatKpi->kota" :required="true" /></div>
+                            </div>
+                            <p class="small text-secondary mb-3">Periode KPI: {{ ($suratPermohonan?->tanggal_mulai ?? $pengajuan->tanggal_mulai)->translatedFormat('d F Y') }} – {{ ($suratPermohonan?->tanggal_selesai ?? $pengajuan->tanggal_selesai)->translatedFormat('d F Y') }}. Admin dapat menyesuaikan tanggal dan data surat bila diperlukan.</p>
+                            @include('partials.surat-anggota-fields', ['pengajuan' => $pengajuan, 'surat' => $suratPermohonan, 'kunciAnggotaPertama' => true])
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                <button type="submit" name="aksi" value="unduh" class="btn btn-primary"><i class="bi bi-download me-1" aria-hidden="true"></i>Unduh</button>
+                                <button type="submit" name="aksi" value="cetak" formtarget="_blank" class="btn btn-outline-primary"><i class="bi bi-printer me-1" aria-hidden="true"></i>Cetak</button>
+                            </div>
+                        </form>
                     </div>
                     <div class="col-lg-6">
                         <h3 class="pk-subtitle">2. Surat balasan dari instansi</h3>
@@ -58,7 +76,7 @@
 
         <section class="mb-4">
             <div class="pk-panel-head"><h2 class="pk-panel-title">Semua dokumen</h2></div>
-            @include('shared.dokumen', ['dokumen' => $pengajuan->dokumen])
+            @include('shared.dokumen', ['dokumen' => $pengajuan->dokumen, 'pengajuan' => $pengajuan])
             @if ($pengajuan->status !== 'selesai')
                 <details class="pk-panel mt-3"><summary class="fw-semibold">Unggah dokumen pendukung lainnya</summary>
                     <form method="POST" action="{{ route('mahasiswa.pengajuan.dokumen', $pengajuan) }}" enctype="multipart/form-data" class="mt-2">@csrf

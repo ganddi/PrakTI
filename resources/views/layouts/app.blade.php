@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('judul', 'Dashboard') | PrakTI</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
     <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -26,16 +27,31 @@
 
             <div class="ms-auto d-flex align-items-center gap-3">
                 @include('partials.notifikasi')
-                <a href="{{ route('pengaturan') }}" class="pk-user d-none d-sm-flex">
-                    <span class="pk-avatar" aria-hidden="true">{{ strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
-                    <span class="lh-sm"><span class="d-block fw-semibold">{{ auth()->user()->name }}</span><small class="text-secondary">{{ auth()->user()->peran_label }}</small></span>
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="btn btn-outline-secondary btn-sm" type="submit">
-                        <i class="bi bi-box-arrow-right me-1"></i>Keluar
+                <div class="dropdown pk-account-dropdown">
+                    <button class="pk-account-trigger" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu akun {{ auth()->user()->name }}">
+                        <span class="pk-account-avatar" aria-hidden="true">
+                            @if (auth()->user()->foto_profil_url)
+                                <img src="{{ auth()->user()->foto_profil_url }}" alt="">
+                            @else
+                                <i class="bi bi-person-fill"></i>
+                            @endif
+                        </span>
+                        <span class="pk-account-name">{{ auth()->user()->name }}</span>
+                        <i class="bi bi-chevron-down pk-account-chevron" aria-hidden="true"></i>
                     </button>
-                </form>
+                    <div class="dropdown-menu dropdown-menu-end pk-account-menu">
+                        <div class="pk-account-menu-heading">
+                            <strong>{{ auth()->user()->name }}</strong>
+                            <small>{{ auth()->user()->peran_label }}</small>
+                        </div>
+                        <a class="dropdown-item" href="{{ route('pengaturan') }}"><i class="bi bi-person-gear me-2"></i>Profil dan pengaturan</a>
+                        <div class="dropdown-divider"></div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button class="dropdown-item text-danger" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Keluar</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -47,7 +63,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/prakti.js') }}"></script>
+<script src="{{ asset('js/prakti.js') }}?v={{ filemtime(public_path('js/prakti.js')) }}"></script>
 @stack('scripts')
 </body>
 </html>

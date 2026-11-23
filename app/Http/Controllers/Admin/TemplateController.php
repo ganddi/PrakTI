@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AktivitasSistem;
+use App\Models\PengaturanSurat;
+use App\Models\SuratPermohonanKpi;
 use App\Support\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +18,28 @@ class TemplateController extends Controller
     {
         return view('admin.template.index', [
             'template' => collect(Template::JENIS)->mapWithKeys(fn ($l, $j) => [$j => Template::daftar($j)]),
+            'pengaturanSurat' => PengaturanSurat::query()->findOrFail(1),
         ]);
+    }
+
+    public function updatePengaturanSurat(Request $request)
+    {
+        $pengaturan = PengaturanSurat::query()->findOrFail(1);
+        $nomorTerpakai = (int) SuratPermohonanKpi::query()->where('tahun_nomor', $pengaturan->tahun_nomor)->max('nomor_urut');
+        $data = $request->validate([
+            'kode_nomor' => ['required', 'string', 'max:80', 'regex:/^[A-Za-z0-9.\/-]+$/'],
+            'nomor_terakhir' => ['required', 'integer', 'min:'.$nomorTerpakai, 'max:999999'],
+            'nama_penandatangan' => ['required', 'string', 'max:150'],
+            'nip_penandatangan' => ['required', 'string', 'max:40'],
+            'pangkat_golongan' => ['required', 'string', 'max:100'],
+            'jabatan_penandatangan' => ['required', 'string', 'max:100'],
+            'kota_surat' => ['required', 'string', 'max:80'],
+        ]);
+
+        $pengaturan->update($data);
+        AktivitasSistem::catat('Memperbarui pengaturan surat permohonan KPI', 'surat');
+
+        return back()->with('sukses', 'Pengaturan surat permohonan berhasil disimpan.');
     }
 
     public function store(Request $request)
@@ -35,7 +58,7 @@ class TemplateController extends Controller
     {
         $path = Template::pathDariKode($kode);
         abort_unless($path, 404);
-        Storage::disk('local')->delete($path);
+        Storage::disk()->delete($path);
 
         return back()->with('sukses', 'Template dihapus.');
     }

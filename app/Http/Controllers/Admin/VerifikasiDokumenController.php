@@ -9,6 +9,7 @@ use App\Models\NilaiAkhir;
 use App\Models\Notifikasi;
 use App\Models\PengajuanKpi;
 use App\Models\Penilaian;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -25,19 +26,27 @@ class VerifikasiDokumenController extends Controller
 
     public function index(Request $request)
     {
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+        ]);
         $tab = $request->query('tab', 'surat');
         abort_unless(array_key_exists($tab, self::KELOMPOK), 404);
         $status = $request->query('status', DokumenKpi::MENUNGGU);
         abort_unless(in_array($status, [DokumenKpi::MENUNGGU, DokumenKpi::DIVERIFIKASI, DokumenKpi::REVISI], true), 404);
+        $pencarian = trim($validated['q'] ?? '');
 
         $dokumen = DokumenKpi::with(['pengajuan.mahasiswa', 'pengajuan.tempatKpi', 'pengajuan.penilaian', 'pengajuan.nilaiAkhir'])
             ->whereIn('jenis_dokumen', self::KELOMPOK[$tab]['jenis'])->where('status_verifikasi', $status)
+            ->when($pencarian !== '', fn (Builder $query) => $query->whereHas('mahasiswa', fn (Builder $mahasiswa) => $mahasiswa
+                ->where(fn (Builder $cocok) => $cocok
+                    ->where('nama_lengkap', 'like', "%{$pencarian}%")
+                    ->orWhere('nim', 'like', "%{$pencarian}%"))))
             ->when($status === DokumenKpi::MENUNGGU, fn ($q) => $q->oldest('id'), fn ($q) => $q->latest('verified_at'))
             ->paginate(15)->withQueryString();
 
         $jumlah = collect(self::KELOMPOK)->map(fn ($k) => DokumenKpi::whereIn('jenis_dokumen', $k['jenis'])->where('status_verifikasi', DokumenKpi::MENUNGGU)->count());
 
-        return view('admin.verifikasi.index', compact('dokumen', 'tab', 'status', 'jumlah'));
+        return view('admin.verifikasi.index', compact('dokumen', 'tab', 'status', 'jumlah', 'pencarian'));
     }
 
     public function update(Request $request, DokumenKpi $dokumen)

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('judul', 'Dashboard')
-@section('subjudul', 'Kelola dan pantau pelaksanaan Kerja Praktik Industri melalui PrakTI')
+@section('subjudul', 'Kelola dan Pantau pelaksanaan Kerja Praktik Industri melalui PrakTI')
 
 @section('content')
     <div class="pk-stats mb-4">

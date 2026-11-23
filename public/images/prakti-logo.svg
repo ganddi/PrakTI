@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 68" role="img" aria-labelledby="title">
+  <title id="title">PrakTI — Platform Kerja Praktik Industri</title>
+  <g fill="#fff">
+    <path d="M3 22 27 9v49L3 67V22Zm8 5v7l7-4v-7l-7 4Zm0 13v7l7-4v-7l-7 4Zm11-20v7l-7 4v-7l7-4Zm0 13v7l-7 4v-7l7-4Z"/>
+    <path d="M32 14h8v44h-8z"/>
+    <text x="43" y="43" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" letter-spacing="-2">PrakTI</text>
+    <text x="44" y="59" font-family="Arial, Helvetica, sans-serif" font-size="11.6" font-weight="700" letter-spacing="-.35">Platform Kerja Praktik Industri</text>
+  </g>
+</svg>
