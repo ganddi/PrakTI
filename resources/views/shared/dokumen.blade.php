@@ -35,7 +35,7 @@
                 <td class="text-end">
                     <div class="d-flex flex-wrap justify-content-end gap-1">
                         <a href="{{ route('dokumen.unduh', ['dokumen' => $d, 'lihat' => 1]) }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1" aria-hidden="true"></i>Lihat</a>
-                        <a href="{{ route('dokumen.unduh', $d) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download me-1" aria-hidden="true"></i>Unduh</a>
+                        <a href="{{ route('dokumen.unduh', $d) }}" class="btn btn-sm btn-outline-primary" aria-label="Unduh {{ $d->nama_file }}" title="Unduh"><i class="bi bi-download" aria-hidden="true"></i></a>
                         @if ($admin)
                             <details class="pk-document-edit">
                                 <summary class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit</summary>

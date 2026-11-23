@@ -38,8 +38,7 @@ class SuratPermohonanPdfGenerator
         $this->teks($kiri, $y, 'Hal: Permohonan Kerja Praktek Industri', 10);
 
         $y -= 38;
-        $this->teks($kiri, $y, 'Kepada Yth: '.$surat->penerima.' '.$surat->nama_instansi, 10);
-        $y -= 14;
+        $y = $this->paragraf('Kepada Yth: '.$surat->penerima.' '.$surat->nama_instansi, $kiri, $y, 10, 14);
         $this->teks($kiri, $y, 'Di-', 10);
         $y -= 14;
         $this->teks($kiri + 24, $y, $surat->kota_instansi, 10);
@@ -53,8 +52,7 @@ class SuratPermohonanPdfGenerator
             'Pangkat/Golongan' => $surat->pangkat_golongan,
             'Jabatan' => $surat->jabatan_penandatangan,
         ] as $label => $value) {
-            $this->teks($kiri + 18, $y, $label.': '.$value, 10);
-            $y -= 14;
+            $y = $this->paragraf($label.': '.$value, $kiri + 18, $y, 10, 13);
         }
 
         $y -= 12;
@@ -71,15 +69,23 @@ class SuratPermohonanPdfGenerator
             $baris[] = [(string) ($i + 1), $orang['nama'], $orang['nim'], $prodi];
         }
         $lebarKolom = [34, 185, 105, 165];
+        $batasKolom = [4, 34, 18, 28];
         foreach ($baris as $nomorBaris => $kolom) {
-            $tinggiBaris = $nomorBaris === 0 ? 22 : 24;
+            $barisKolom = [];
+            foreach ($kolom as $i => $isi) {
+                $barisKolom[] = $this->bungkus((string) $isi, $batasKolom[$i]);
+            }
+            $jumlahBarisTeks = max(array_map('count', $barisKolom));
+            $tinggiBaris = max($nomorBaris === 0 ? 22 : 24, 8 + $jumlahBarisTeks * 10);
             $this->perintah[] = sprintf('0.6 w %.2f %.2f %.2f %.2f re S', $kiri, $y - $tinggiBaris + 5, array_sum($lebarKolom), $tinggiBaris);
             $x = $kiri;
             foreach ($kolom as $i => $isi) {
                 if ($i > 0) {
                     $this->perintah[] = sprintf('0.4 w %.2f %.2f m %.2f %.2f l S', $x, $y + 5, $x, $y - $tinggiBaris + 5);
                 }
-                $this->teks($x + 5, $y - 10, $isi, 8, $nomorBaris === 0);
+                foreach ($barisKolom[$i] as $barisTeks => $teks) {
+                    $this->teks($x + 5, $y - 10 - ($barisTeks * 10), $teks, 8, $nomorBaris === 0);
+                }
                 $x += $lebarKolom[$i];
             }
             $y -= $tinggiBaris;
@@ -122,13 +128,12 @@ class SuratPermohonanPdfGenerator
 
     private function bungkus(string $teks, int $batas): array
     {
-        $teks = $this->enkode($teks);
-        $kata = preg_split('/\s+/', $teks) ?: [];
+        $kata = preg_split('/\s+/u', trim($teks)) ?: [];
         $baris = [];
         $saatIni = '';
         foreach ($kata as $item) {
             $uji = $saatIni === '' ? $item : $saatIni.' '.$item;
-            if (strlen($uji) > $batas && $saatIni !== '') {
+            if (strlen($this->enkode($uji)) > $batas && $saatIni !== '') {
                 $baris[] = $saatIni;
                 $saatIni = $item;
             } else {
