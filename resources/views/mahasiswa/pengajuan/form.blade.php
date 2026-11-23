@@ -5,7 +5,7 @@
 @section('content')
     <a href="{{ route('mahasiswa.pengajuan.index') }}" class="pk-back"><i class="bi bi-arrow-left"></i>Kembali ke pengajuan</a>
     @if ($periode->isEmpty())
-        <div class="alert alert-warning" style="max-width: 820px">Belum ada periode KPI yang dibuka. Hubungi admin program studi Informatika.</div>
+        <div class="alert alert-warning" style="max-width: 820px">Belum ada periode KPI yang dibuka. Hubungi admin program studi.</div>
     @else
         @if ($pengajuan->exists && $pengajuan->catatan_admin)<div class="alert alert-warning" style="max-width: 820px"><div class="fw-semibold mb-1">Catatan perbaikan dari admin</div>{{ $pengajuan->catatan_admin }}</div>@endif
         <div class="alert pk-instruction-alert" role="note" style="max-width: 820px"><div class="fw-semibold mb-1"><i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>Siapkan dokumen berikut sebelum mengirim</div>
