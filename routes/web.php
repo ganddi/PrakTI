@@ -30,6 +30,7 @@ Route::middleware(['auth', 'role:admin,mahasiswa,pembimbing'])->group(function (
     Route::controller(PengaturanController::class)->group(function () {
         Route::get('/pengaturan', 'edit')->name('pengaturan');
         Route::put('/pengaturan/profil', 'profil')->name('pengaturan.profil');
+        Route::delete('/pengaturan/foto', 'hapusFoto')->name('pengaturan.foto.hapus');
         Route::put('/pengaturan/kata-sandi', 'kataSandi')->name('pengaturan.sandi');
     });
 

@@ -7,8 +7,28 @@
         <div class="col-lg-7">
             <section class="pk-panel">
                 <h2 class="pk-panel-title mb-3">Profil</h2>
-                <form method="POST" action="{{ route('pengaturan.profil') }}">
+                <form method="POST" action="{{ route('pengaturan.profil') }}" enctype="multipart/form-data">
                     @csrf @method('PUT')
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="pk-profile-avatar" id="foto-profil-preview" aria-label="Foto profil">
+                            @if ($user->foto_profil_url)
+                                <img src="{{ $user->foto_profil_url }}" alt="Foto profil {{ $user->name }}">
+                            @else
+                                <i class="bi bi-person-fill" aria-hidden="true"></i>
+                            @endif
+                        </div>
+                        <div>
+                            <label class="form-label" for="foto_profil">Foto profil</label>
+                            <input class="form-control" type="file" id="foto_profil" name="foto_profil" accept="image/jpeg,image/png,image/webp">
+                            <div class="form-text">JPG, PNG, atau WebP. Maksimal 2 MB.</div>
+                            @if ($user->foto_profil)
+                                <button class="btn btn-link px-0 text-danger small" type="button"
+                                        onclick="event.preventDefault(); document.getElementById('hapus-foto-form').submit();">
+                                    Hapus foto
+                                </button>
+                            @endif
+                        </div>
+                    </div>
                     @if ($profil)
                         <x-input name="nama_lengkap" label="Nama lengkap" :value="$profil->nama_lengkap" :required="true" />
                         <div class="mb-3"><label class="form-label">{{ $user->isMahasiswa() ? 'NIM' : 'NIDN' }}</label><input class="form-control" value="{{ $user->nomor_induk }}" disabled></div>
@@ -27,6 +47,11 @@
                     @endif
                     <button class="btn btn-primary" type="submit">Simpan profil</button>
                 </form>
+                @if ($user->foto_profil)
+                    <form id="hapus-foto-form" method="POST" action="{{ route('pengaturan.foto.hapus') }}" class="d-none">
+                        @csrf @method('DELETE')
+                    </form>
+                @endif
             </section>
         </div>
         <div class="col-lg-5">
@@ -43,4 +68,21 @@
             <p class="small text-secondary mt-3">Login terakhir: {{ $user->last_login_at?->translatedFormat('d F Y H:i') ?? '–' }}</p>
         </div>
     </div>
+@push('scripts')
+<script>
+    const fotoInput = document.getElementById('foto_profil');
+    const fotoPreview = document.getElementById('foto-profil-preview');
+
+    fotoInput?.addEventListener('change', function () {
+        const file = this.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            fotoPreview.innerHTML = `<img src="${event.target.result}" alt="Pratinjau foto profil">`;
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
+@endpush
 @endsection

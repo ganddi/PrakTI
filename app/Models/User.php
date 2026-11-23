@@ -13,7 +13,9 @@ class User extends Authenticatable
     use Notifiable;
 
     public const ADMIN = 'admin';
+
     public const MAHASISWA = 'mahasiswa';
+
     public const PEMBIMBING = 'pembimbing';
 
     public const PERAN = [
@@ -23,10 +25,12 @@ class User extends Authenticatable
     ];
 
     public const AKTIF = 'aktif';
+
     public const NONAKTIF = 'nonaktif';
+
     public const MENUNGGU = 'menunggu';
 
-    protected $fillable = ['username', 'email', 'password', 'role', 'status', 'last_login_at'];
+    protected $fillable = ['username', 'email', 'password', 'role', 'status', 'last_login_at', 'foto_profil'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -50,9 +54,20 @@ class User extends Authenticatable
         return $this->hasMany(Notifikasi::class)->latest('id');
     }
 
-    public function isAdmin(): bool { return $this->role === self::ADMIN; }
-    public function isMahasiswa(): bool { return $this->role === self::MAHASISWA; }
-    public function isPembimbing(): bool { return $this->role === self::PEMBIMBING; }
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ADMIN;
+    }
+
+    public function isMahasiswa(): bool
+    {
+        return $this->role === self::MAHASISWA;
+    }
+
+    public function isPembimbing(): bool
+    {
+        return $this->role === self::PEMBIMBING;
+    }
 
     /** Profil detail sesuai peran. */
     public function profil(): Mahasiswa|DosenPembimbing|null
@@ -87,5 +102,10 @@ class User extends Authenticatable
     public function getPeranLabelAttribute(): string
     {
         return self::PERAN[$this->role] ?? ucfirst((string) $this->role);
+    }
+
+    public function getFotoProfilUrlAttribute(): ?string
+    {
+        return $this->foto_profil ? asset('storage/'.$this->foto_profil) : null;
     }
 }

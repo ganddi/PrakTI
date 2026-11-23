@@ -29,7 +29,13 @@
                 @include('partials.notifikasi')
                 <div class="dropdown pk-account-dropdown">
                     <button class="pk-account-trigger" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu akun {{ auth()->user()->name }}">
-                        <span class="pk-account-avatar" aria-hidden="true"><i class="bi bi-person-fill"></i></span>
+                        <span class="pk-account-avatar" aria-hidden="true">
+                            @if (auth()->user()->foto_profil_url)
+                                <img src="{{ auth()->user()->foto_profil_url }}" alt="">
+                            @else
+                                <i class="bi bi-person-fill"></i>
+                            @endif
+                        </span>
                         <span class="pk-account-name">{{ auth()->user()->name }}</span>
                         <i class="bi bi-chevron-down pk-account-chevron" aria-hidden="true"></i>
                     </button>
