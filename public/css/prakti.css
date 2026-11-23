@@ -180,6 +180,42 @@ a.pk-summary-item:hover { background: #FAFBFD; }
 .pk-tabs .nav-link:hover { color: var(--pk-ink); }
 .pk-tabs .nav-link.active { color: var(--pk-ink); background: none; border-bottom-color: var(--pk-ink); }
 
+/* Admin document verification filters */
+.pk-verifikasi-toolbar { margin-bottom: 1.25rem; padding: 1.25rem; border: 1px solid var(--pk-line); border-radius: 16px; background: linear-gradient(135deg, #fff 0%, #F8FAFD 100%); box-shadow: 0 4px 16px rgba(31, 58, 95, .045); }
+.pk-verifikasi-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.125rem; }
+.pk-verifikasi-heading h2 { margin: 0 0 .25rem; color: var(--pk-text); font-size: 1rem; font-weight: 700; }
+.pk-verifikasi-heading p { margin: 0; color: var(--pk-muted); font-size: .875rem; }
+.pk-verifikasi-total { display: inline-flex; flex: 0 0 auto; align-items: center; gap: .4rem; padding: .375rem .75rem; border: 1px solid var(--pk-line); border-radius: 999px; background: #fff; color: var(--pk-ink); font-size: .8125rem; font-weight: 600; white-space: nowrap; }
+.pk-verifikasi-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: .625rem; margin: 0 0 1rem; border: 0; }
+.pk-verifikasi-tabs .nav-item { min-width: 0; }
+.pk-verifikasi-tabs .nav-link { display: flex; min-height: 3.75rem; align-items: center; gap: .625rem; padding: .625rem .75rem; border: 1px solid var(--pk-line); border-radius: 12px; background: #fff; color: var(--pk-text); font-size: .875rem; font-weight: 600; text-decoration: none; transition: background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.pk-verifikasi-tabs .nav-link:hover { transform: translateY(-1px); border-color: #B5C5D8; background: var(--pk-ink-soft); color: var(--pk-ink-dark); box-shadow: 0 4px 10px rgba(31, 58, 95, .08); }
+.pk-verifikasi-tabs .nav-link.active { border-color: var(--pk-ink); background: var(--pk-ink); color: #fff; box-shadow: 0 4px 12px rgba(31, 58, 95, .18); }
+.pk-verifikasi-tabs .nav-link.active:hover { border-color: var(--pk-ink-dark); background: var(--pk-ink-dark); color: #fff; }
+.pk-verifikasi-tab-icon { display: grid; flex: 0 0 auto; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 9px; background: var(--pk-ink-soft); color: var(--pk-ink); font-size: 1.125rem; }
+.pk-verifikasi-tabs .nav-link.active .pk-verifikasi-tab-icon { background: rgba(255, 255, 255, .16); color: #fff; }
+.pk-verifikasi-tab-label { min-width: 0; }
+.pk-verifikasi-tabs .pk-count-badge { margin-left: auto; }
+.pk-verifikasi-status { display: flex; flex-wrap: wrap; align-items: center; gap: .625rem; margin-bottom: 1rem; }
+.pk-verifikasi-status-label { color: var(--pk-muted); font-size: .8125rem; font-weight: 600; }
+.pk-verifikasi-status-list { gap: .25rem; }
+.pk-verifikasi-status-list .nav-link { padding: .375rem .75rem; border-radius: 999px; color: var(--pk-muted); font-size: .8125rem; font-weight: 600; transition: background-color .18s ease, color .18s ease; }
+.pk-verifikasi-status-list .nav-link:hover { background: var(--pk-ink-soft); color: var(--pk-ink); }
+.pk-verifikasi-status-list .nav-link.active { background: #E8EEF6; color: var(--pk-ink-dark); box-shadow: inset 0 0 0 1px #C8D5E4; }
+.pk-verifikasi-search { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.pk-verifikasi-search-field { display: flex; flex: 1 1 260px; min-width: 0; align-items: center; gap: .625rem; padding: 0 .875rem; border: 1px solid #CBD6E3; border-radius: 10px; background: #fff; color: var(--pk-muted); transition: border-color .18s ease, box-shadow .18s ease; }
+.pk-verifikasi-search-field:focus-within { border-color: #7F9BC0; box-shadow: 0 0 0 .2rem rgba(31, 58, 95, .14); }
+.pk-verifikasi-search-field > i { flex: 0 0 auto; color: #718198; font-size: 1rem; }
+.pk-verifikasi-search-field .form-control { min-width: 0; min-height: 2.875rem; padding: .5rem 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.pk-verifikasi-search .btn { display: inline-flex; min-height: 2.875rem; align-items: center; justify-content: center; gap: .45rem; padding-inline: 1rem; }
+.pk-verifikasi-reset { background: #fff; }
+@media (max-width: 575.98px) {
+  .pk-verifikasi-toolbar { padding: 1rem; }
+  .pk-verifikasi-heading { flex-direction: column; gap: .625rem; }
+  .pk-verifikasi-search-field { flex-basis: 100%; }
+  .pk-verifikasi-search .btn { flex: 1 1 auto; }
+}
+
 /* ---------- Logbook: halaman buku bergaris ---------- */
 .pk-logbook { background: #fff; border: 1px solid var(--pk-line); border-radius: 12px; overflow: hidden; }
 .pk-log { display: grid; grid-template-columns: 104px minmax(0, 1fr); scroll-margin-top: 84px; }
